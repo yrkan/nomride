@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NomRide</string>
+    <string name="extension_name">NomRide</string>
+
+    <!-- Data Types -->
+    <string name="dt_carb_balance">Carb Balance</string>
+    <string name="dt_carb_balance_desc">Real-time carbohydrate balance (eaten minus burned)</string>
+    <string name="dt_carbs_burned">Carbs Burned</string>
+    <string name="dt_carbs_burned_desc">Total carbohydrates burned during the ride</string>
+    <string name="dt_carbs_eaten">Carbs Eaten</string>
+    <string name="dt_carbs_eaten_desc">Total carbohydrates consumed during the ride</string>
+    <string name="dt_burn_rate">Burn Rate</string>
+    <string name="dt_burn_rate_desc">Current carbohydrate burn rate (g/h)</string>
+    <string name="dt_quick_log">Quick Log</string>
+    <string name="dt_quick_log_desc">Last logged food item and time since last intake</string>
+    <string name="dt_hydration">Hydration</string>
+    <string name="dt_hydration_desc">Water intake tracking and reminders</string>
+
+    <!-- Bonus Actions -->
+    <string name="action_log_food">Log Food</string>
+    <string name="action_log_water">Log Water</string>
+    <string name="action_quick_gel">Quick Gel</string>
+    <string name="action_undo_last">Undo Last</string>
+
+    <!-- Alerts -->
+    <string name="alert_eat_title">Time to eat!</string>
+    <string name="alert_eat_detail">Recommended: %1$dg carbs. Balance: %2$dg</string>
+    <string name="alert_drink_title">Drink water!</string>
+    <string name="alert_drink_detail">Stay hydrated — take a sip</string>
+
+    <!-- Units -->
+    <string name="unit_grams">g</string>
+    <string name="unit_grams_per_hour">g/h</string>
+    <string name="unit_ml">ml</string>
+    <string name="unit_minutes">min</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">NomRide Background</string>
+    <string name="notification_channel_description">Nutrition tracking during rides</string>
+    <string name="notification_title">NomRide</string>
+    <string name="notification_text">Tracking nutrition</string>
+
+    <!-- Settings -->
+    <string name="settings_title">NomRide Settings</string>
+    <string name="settings_ftp_override">FTP Override</string>
+    <string name="settings_weight_override">Weight Override</string>
+    <string name="settings_use_karoo_profile">Use Karoo Profile</string>
+    <string name="settings_food_templates">Food Templates</string>
+    <string name="settings_eat_interval">Eat Reminder Interval</string>
+    <string name="settings_drink_interval">Drink Reminder Interval</string>
+    <string name="settings_sound_enabled">Sound Alerts</string>
+    <string name="settings_fit_export">FIT Export</string>
+
+    <!-- Quick Log -->
+    <string name="quick_log_title">Log Food</string>
+    <string name="quick_log_water_title">Log Water</string>
+    <string name="quick_log_custom">Custom</string>
+    <string name="quick_log_logged">Logged %1$s</string>
+</resources>

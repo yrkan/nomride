@@ -1,0 +1,10 @@
+{
+  "label": "NomRide",
+  "packageName": "com.nomride",
+  "latestApkUrl": "https://github.com/yrkan/nomride/releases/latest/download/nomride.apk",
+  "latestVersion": "1.0.0",
+  "latestVersionCode": 1,
+  "iconUrl": "https://raw.githubusercontent.com/yrkan/nomride/main/assets/icon.png",
+  "developer": "Yuri Kan",
+  "description": "Real-time nutrition tracking for Hammerhead Karoo. Track carb balance, burn rate, hydration, and get eat/drink reminders during rides."
+}

@@ -1,0 +1,39 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Scale/balance icon - nutrition balance symbol -->
+    <!-- Center pillar -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M11,3h2v2h-2z" />
+    <!-- Beam -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M2,7h20v2H2z" />
+    <!-- Left chain -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M4,9h2v4H4z" />
+    <!-- Right chain -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M18,9h2v4h-2z" />
+    <!-- Left pan -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M1,13h8v2H1z" />
+    <!-- Right pan -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M15,13h8v2h-8z" />
+    <!-- Base -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M8,19h8v2H8z" />
+    <!-- Stand -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M11,5h2v14h-2z" />
+</vector>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExtensionInfo
+    displayName="@string/extension_name"
+    icon="@drawable/ic_nomride"
+    id="nomride"
+    scansDevices="false"
+    fitFile="true">
+
+    <DataType
+        typeId="carb-balance"
+        displayName="@string/dt_carb_balance"
+        description="@string/dt_carb_balance_desc"
+        graphical="true"
+        icon="@drawable/ic_balance" />
+    <DataType
+        typeId="carbs-burned"
+        displayName="@string/dt_carbs_burned"
+        description="@string/dt_carbs_burned_desc"
+        graphical="false"
+        icon="@drawable/ic_fire" />
+    <DataType
+        typeId="carbs-eaten"
+        displayName="@string/dt_carbs_eaten"
+        description="@string/dt_carbs_eaten_desc"
+        graphical="false"
+        icon="@drawable/ic_food" />
+    <DataType
+        typeId="burn-rate"
+        displayName="@string/dt_burn_rate"
+        description="@string/dt_burn_rate_desc"
+        graphical="false"
+        icon="@drawable/ic_fire" />
+    <DataType
+        typeId="quick-log-status"
+        displayName="@string/dt_quick_log"
+        description="@string/dt_quick_log_desc"
+        graphical="true"
+        icon="@drawable/ic_food" />
+    <DataType
+        typeId="hydration"
+        displayName="@string/dt_hydration"
+        description="@string/dt_hydration_desc"
+        graphical="true"
+        icon="@drawable/ic_water" />
+
+    <BonusAction
+        actionId="log-food"
+        displayName="@string/action_log_food" />
+    <BonusAction
+        actionId="log-water"
+        displayName="@string/action_log_water" />
+    <BonusAction
+        actionId="quick-gel"
+        displayName="@string/action_quick_gel" />
+    <BonusAction
+        actionId="undo-last"
+        displayName="@string/action_undo_last" />
+
+</ExtensionInfo>
