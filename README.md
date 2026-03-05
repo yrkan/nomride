@@ -1,5 +1,10 @@
 # NomRide
 
+[![License](https://img.shields.io/badge/License-MIT-0d1117?style=flat-square&logo=opensourceinitiative&logoColor=white)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Karoo%202%2F3-0d1117?style=flat-square&logo=android&logoColor=white)](https://www.hammerhead.io/)
+[![Downloads](https://img.shields.io/github/downloads/yrkan/nomride/total?style=flat-square&color=0d1117&logo=github&logoColor=white)](https://github.com/yrkan/nomride/releases)
+[![Release](https://img.shields.io/github/v/release/yrkan/nomride?style=flat-square&color=0d1117&logo=github&logoColor=white)](https://github.com/yrkan/nomride/releases/latest)
+
 Real-time nutrition tracking extension for [Hammerhead Karoo](https://www.hammerhead.io/).
 
 Track carb balance, burn rate, hydration, and get eat/drink reminders during rides — all directly on your Karoo screen.
