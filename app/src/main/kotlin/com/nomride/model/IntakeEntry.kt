@@ -8,6 +8,7 @@ data class IntakeEntry(
     val carbsGrams: Double,
     val type: IntakeType,
     val templateName: String? = null,
+    val templateEmoji: String? = null,
     val waterMl: Double = 0.0,
 ) {
     @Serializable

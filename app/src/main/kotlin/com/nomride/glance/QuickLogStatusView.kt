@@ -17,13 +17,18 @@ import io.hammerhead.karooext.models.ViewConfig
 @Composable
 fun QuickLogStatusView(
     lastIntakeName: String?,
+    lastIntakeEmoji: String?,
     lastIntakeTimestampMs: Long,
     balance: Double,
     burnRateGph: Double,
     viewConfig: ViewConfig,
 ) {
     val layoutSize = getLayoutSize(viewConfig)
+    val emoji = lastIntakeEmoji ?: ""
     val name = lastIntakeName ?: NO_DATA
+    // Short: emoji only (or name if no emoji). Long: "emoji name" or just name.
+    val shortDisplay = emoji.ifEmpty { name }
+    val fullDisplay = if (emoji.isNotEmpty() && lastIntakeName != null) "$emoji $name" else name
     val timeAgo = formatMinutesAgo(lastIntakeTimestampMs)
     val minutesAgo = if (lastIntakeTimestampMs > 0) {
         ((System.currentTimeMillis() - lastIntakeTimestampMs) / 60_000).toInt()
@@ -33,7 +38,7 @@ fun QuickLogStatusView(
         when (layoutSize) {
             LayoutSize.SMALL -> {
                 ValueText(
-                    text = name,
+                    text = shortDisplay,
                     color = if (lastIntakeName != null) GlanceColors.White else GlanceColors.Label,
                     fontSize = 14.sp,
                 )
@@ -46,7 +51,7 @@ fun QuickLogStatusView(
                 ) {
                     LabelText(text = "LAST FOOD", fontSize = 10.sp)
                     ValueText(
-                        text = name,
+                        text = shortDisplay,
                         color = if (lastIntakeName != null) GlanceColors.Food else GlanceColors.Label,
                         fontSize = 18.sp,
                     )
@@ -62,7 +67,7 @@ fun QuickLogStatusView(
                     Spacer(modifier = GlanceModifier.height(2.dp))
                     TripleMetric(
                         label1 = "NAME",
-                        value1 = name,
+                        value1 = shortDisplay,
                         value1Color = if (lastIntakeName != null) GlanceColors.Food else GlanceColors.Label,
                         label2 = "AGO",
                         value2 = timeAgo,
@@ -83,7 +88,7 @@ fun QuickLogStatusView(
                 ) {
                     LabelText(text = "LAST FOOD", fontSize = 11.sp)
                     ValueText(
-                        text = name,
+                        text = fullDisplay,
                         color = if (lastIntakeName != null) GlanceColors.Food else GlanceColors.Label,
                         fontSize = 18.sp,
                     )
@@ -105,7 +110,7 @@ fun QuickLogStatusView(
                 ) {
                     LabelText(text = "LAST FOOD", fontSize = 11.sp)
                     ValueText(
-                        text = name,
+                        text = fullDisplay,
                         color = if (lastIntakeName != null) GlanceColors.Food else GlanceColors.Label,
                         fontSize = 28.sp,
                     )
@@ -142,7 +147,7 @@ fun QuickLogStatusView(
                 ) {
                     LabelText(text = "LAST FOOD", fontSize = 11.sp)
                     ValueText(
-                        text = name,
+                        text = fullDisplay,
                         color = if (lastIntakeName != null) GlanceColors.Food else GlanceColors.Label,
                         fontSize = 16.sp,
                     )

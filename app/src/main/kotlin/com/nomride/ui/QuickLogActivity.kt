@@ -97,6 +97,7 @@ class QuickLogActivity : ComponentActivity() {
             carbsGrams = template.carbsGrams.toDouble(),
             type = IntakeEntry.IntakeType.FOOD,
             templateName = template.name,
+            templateEmoji = template.emoji.ifEmpty { null },
         )
         tracker.logIntake(entry)
         Toast.makeText(this, "Logged ${template.name} (${template.carbsGrams}g)", Toast.LENGTH_SHORT).show()

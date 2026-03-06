@@ -94,6 +94,7 @@ class CarbBalanceTracker(private val preferences: Preferences) {
             totalEaten = current.totalEaten + entry.carbsGrams,
             lastIntakeTimestampMs = entry.timestampMs,
             lastIntakeName = entry.templateName,
+            lastIntakeEmoji = entry.templateEmoji,
             intakeLog = current.intakeLog + entry,
         )
         maybeSave(now)
@@ -118,6 +119,7 @@ class CarbBalanceTracker(private val preferences: Preferences) {
             totalWaterMl = current.totalWaterMl + ml,
             lastIntakeTimestampMs = now,
             lastIntakeName = entry.templateName,
+            lastIntakeEmoji = "💧",
             intakeLog = current.intakeLog + entry,
         )
         maybeSave(now)
@@ -143,12 +145,14 @@ class CarbBalanceTracker(private val preferences: Preferences) {
                 totalEaten = (current.totalEaten - lastEntry.carbsGrams).coerceAtLeast(0.0),
                 lastIntakeTimestampMs = prevEntry?.timestampMs ?: 0L,
                 lastIntakeName = prevEntry?.templateName,
+                lastIntakeEmoji = prevEntry?.templateEmoji,
                 intakeLog = newLog,
             )
             IntakeEntry.IntakeType.WATER -> current.copy(
                 totalWaterMl = (current.totalWaterMl - lastEntry.waterMl).coerceAtLeast(0.0),
                 lastIntakeTimestampMs = prevEntry?.timestampMs ?: 0L,
                 lastIntakeName = prevEntry?.templateName,
+                lastIntakeEmoji = prevEntry?.templateEmoji,
                 intakeLog = newLog,
             )
         }

@@ -50,6 +50,7 @@ class QuickLogStatusDataType(
                 val result = glance.compose(context, DpSize.Unspecified) {
                     QuickLogStatusView(
                         lastIntakeName = "Energy Gel",
+                        lastIntakeEmoji = "⚡",
                         lastIntakeTimestampMs = System.currentTimeMillis() - 8 * 60_000,
                         balance = -47.0,
                         burnRateGph = 45.0,
@@ -62,6 +63,7 @@ class QuickLogStatusDataType(
                     val result = glance.compose(context, DpSize.Unspecified) {
                         QuickLogStatusView(
                             lastIntakeName = state.lastIntakeName,
+                            lastIntakeEmoji = state.lastIntakeEmoji,
                             lastIntakeTimestampMs = state.lastIntakeTimestampMs,
                             balance = state.balance,
                             burnRateGph = state.burnRateGph,

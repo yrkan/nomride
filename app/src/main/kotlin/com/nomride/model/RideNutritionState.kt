@@ -10,6 +10,7 @@ data class RideNutritionState(
     val burnRateGph: Double = 0.0,
     val lastIntakeTimestampMs: Long = 0L,
     val lastIntakeName: String? = null,
+    val lastIntakeEmoji: String? = null,
     val intakeLog: List<IntakeEntry> = emptyList(),
 ) {
     val balance: Double get() = totalEaten - totalBurned

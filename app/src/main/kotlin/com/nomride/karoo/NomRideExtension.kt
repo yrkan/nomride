@@ -220,6 +220,7 @@ class NomRideExtension : KarooExtension("nomride", BuildConfig.VERSION_NAME) {
                     carbsGrams = template.carbsGrams.toDouble(),
                     type = IntakeEntry.IntakeType.FOOD,
                     templateName = template.name,
+                    templateEmoji = template.emoji.ifEmpty { null },
                 )
                 tracker.logIntake(entry)
             }
