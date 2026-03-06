@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -111,6 +112,7 @@ fun SettingsScreen(
     var showAddTemplate by remember { mutableStateOf(false) }
     var newTemplateName by remember { mutableStateOf("") }
     var newTemplateCarbs by remember { mutableStateOf("") }
+    var newTemplateEmoji by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -202,20 +204,32 @@ fun SettingsScreen(
                     AddTemplateRow(
                         name = newTemplateName,
                         carbs = newTemplateCarbs,
+                        emoji = newTemplateEmoji,
                         onNameChange = { newTemplateName = it },
                         onCarbsChange = { newTemplateCarbs = it.filter { c -> c.isDigit() } },
+                        onEmojiChange = { newTemplateEmoji = it },
                         onAdd = {
                             val carbs = newTemplateCarbs.toIntOrNull()
                             if (newTemplateName.isNotBlank() && carbs != null && carbs > 0) {
-                                val newTemplate = FoodTemplate(newTemplateName.trim(), carbs)
+                                val newTemplate = FoodTemplate(
+                                    name = newTemplateName.trim(),
+                                    carbsGrams = carbs,
+                                    emoji = newTemplateEmoji.trim(),
+                                )
                                 templates.add(newTemplate)
                                 preferences.saveFoodTemplates(templates.toList())
                                 newTemplateName = ""
                                 newTemplateCarbs = ""
+                                newTemplateEmoji = ""
                                 showAddTemplate = false
                             }
                         },
-                        onCancel = { showAddTemplate = false },
+                        onCancel = {
+                            showAddTemplate = false
+                            newTemplateName = ""
+                            newTemplateCarbs = ""
+                            newTemplateEmoji = ""
+                        },
                         isCompact = isCompact,
                     )
                 } else {
@@ -926,7 +940,7 @@ private fun TemplateRow(
                 .padding(start = 10.dp),
         ) {
             Text(
-                text = template.name,
+                text = template.displayName,
                 fontSize = if (isCompact) 12.sp else 13.sp,
                 fontWeight = if (template.isDefault) FontWeight.Bold else FontWeight.Medium,
                 color = OnSurface,
@@ -975,12 +989,17 @@ private fun TemplateRow(
 private fun AddTemplateRow(
     name: String,
     carbs: String,
+    emoji: String,
     onNameChange: (String) -> Unit,
     onCarbsChange: (String) -> Unit,
+    onEmojiChange: (String) -> Unit,
     onAdd: () -> Unit,
     onCancel: () -> Unit,
     isCompact: Boolean,
 ) {
+    val fontSize = if (isCompact) 12.sp else 13.sp
+    val fieldPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -994,27 +1013,29 @@ private fun AddTemplateRow(
         ) {
             Box(
                 modifier = Modifier
-                    .weight(2f)
+                    .width(if (isCompact) 40.dp else 48.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(SurfaceVariant)
-                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                    .padding(fieldPadding),
+                contentAlignment = Alignment.Center,
             ) {
                 BasicTextField(
-                    value = name,
-                    onValueChange = onNameChange,
+                    value = emoji,
+                    onValueChange = { v -> onEmojiChange(v.take(2)) },
                     singleLine = true,
                     textStyle = LocalTextStyle.current.copy(
-                        fontSize = if (isCompact) 12.sp else 13.sp,
+                        fontSize = if (isCompact) 16.sp else 18.sp,
                         color = OnSurface,
+                        textAlign = TextAlign.Center,
                     ),
                     cursorBrush = SolidColor(Food),
                     decorationBox = { innerTextField ->
-                        Box {
-                            if (name.isEmpty()) {
+                        Box(contentAlignment = Alignment.Center) {
+                            if (emoji.isEmpty()) {
                                 Text(
-                                    text = "Name",
-                                    fontSize = if (isCompact) 12.sp else 13.sp,
-                                    color = OnSurfaceVariant,
+                                    text = "😀",
+                                    fontSize = if (isCompact) 16.sp else 18.sp,
+                                    color = OnSurfaceVariant.copy(alpha = 0.4f),
                                 )
                             }
                             innerTextField()
@@ -1027,7 +1048,33 @@ private fun AddTemplateRow(
                     .weight(1f)
                     .clip(RoundedCornerShape(6.dp))
                     .background(SurfaceVariant)
-                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                    .padding(fieldPadding),
+            ) {
+                BasicTextField(
+                    value = name,
+                    onValueChange = onNameChange,
+                    singleLine = true,
+                    textStyle = LocalTextStyle.current.copy(
+                        fontSize = fontSize,
+                        color = OnSurface,
+                    ),
+                    cursorBrush = SolidColor(Food),
+                    decorationBox = { innerTextField ->
+                        Box {
+                            if (name.isEmpty()) {
+                                Text("Name", fontSize = fontSize, color = OnSurfaceVariant)
+                            }
+                            innerTextField()
+                        }
+                    },
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .width(if (isCompact) 64.dp else 72.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(SurfaceVariant)
+                    .padding(fieldPadding),
             ) {
                 BasicTextField(
                     value = carbs,
@@ -1035,18 +1082,14 @@ private fun AddTemplateRow(
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     textStyle = LocalTextStyle.current.copy(
-                        fontSize = if (isCompact) 12.sp else 13.sp,
+                        fontSize = fontSize,
                         color = OnSurface,
                     ),
                     cursorBrush = SolidColor(Food),
                     decorationBox = { innerTextField ->
                         Box {
                             if (carbs.isEmpty()) {
-                                Text(
-                                    text = "Carbs (g)",
-                                    fontSize = if (isCompact) 12.sp else 13.sp,
-                                    color = OnSurfaceVariant,
-                                )
+                                Text("Carbs g", fontSize = fontSize, color = OnSurfaceVariant)
                             }
                             innerTextField()
                         }
@@ -1077,7 +1120,7 @@ private fun AddTemplateRow(
                     .height(if (isCompact) 32.dp else 36.dp)
                     .clip(RoundedCornerShape(6.dp))
                     .background(if (canAdd) Food else SurfaceVariant)
-                    .clickable(onClick = onAdd)
+                    .clickable(enabled = canAdd, onClick = onAdd)
                     .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.Center,
             ) {
