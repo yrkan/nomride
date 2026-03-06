@@ -21,7 +21,7 @@ class BurnRateDataType(
                     StreamState.Streaming(
                         DataPoint(
                             dataTypeId,
-                            values = mapOf(DataType.Field.SINGLE to state.burnRateGph),
+                            values = mapOf(DataType.Field.SINGLE to kotlin.math.round(state.burnRateGph)),
                         ),
                     ),
                 )

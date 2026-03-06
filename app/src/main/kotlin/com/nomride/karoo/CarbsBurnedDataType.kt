@@ -21,7 +21,7 @@ class CarbsBurnedDataType(
                     StreamState.Streaming(
                         DataPoint(
                             dataTypeId,
-                            values = mapOf(DataType.Field.SINGLE to state.totalBurned),
+                            values = mapOf(DataType.Field.SINGLE to kotlin.math.round(state.totalBurned)),
                         ),
                     ),
                 )
