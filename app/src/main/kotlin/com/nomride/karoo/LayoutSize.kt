@@ -2,6 +2,8 @@ package com.nomride.karoo
 
 import io.hammerhead.karooext.models.ViewConfig
 
+const val NO_DATA = "-"
+
 /**
  * Data field size classification based on ViewConfig.
  *
@@ -10,14 +12,18 @@ import io.hammerhead.karooext.models.ViewConfig
  * - 2x2: 235x390px | 2x4: 235x195px
  */
 enum class LayoutSize {
-    /** Narrow half-width, short height (2x4 grid cells) - minimal content */
+    /** Half-width, height < 200px — minimal content */
     SMALL,
-    /** Full width, very short (~130-160px) - horizontal compact */
+    /** Full-width, height < 160px — horizontal compact */
     SMALL_WIDE,
-    /** Full width medium or half-width tall (~160-250px) */
+    /** Full-width, height 160-249px — medium horizontal */
+    MEDIUM_WIDE,
+    /** Half-width, height 200-599px — medium vertical */
     MEDIUM,
-    /** Large height, full width (250px+) - detailed layout */
+    /** Full-width, height >= 250px — detailed layout */
     LARGE,
+    /** Half-width, height >= 600px — tall narrow */
+    NARROW,
 }
 
 fun getLayoutSize(config: ViewConfig): LayoutSize {
@@ -27,13 +33,13 @@ fun getLayoutSize(config: ViewConfig): LayoutSize {
     return if (isFullWidth) {
         when {
             height >= 250 -> LayoutSize.LARGE
-            height >= 160 -> LayoutSize.MEDIUM
+            height >= 160 -> LayoutSize.MEDIUM_WIDE
             else -> LayoutSize.SMALL_WIDE
         }
     } else {
         when {
-            height >= 250 -> LayoutSize.LARGE
-            height >= 160 -> LayoutSize.MEDIUM
+            height >= 600 -> LayoutSize.NARROW
+            height >= 200 -> LayoutSize.MEDIUM
             else -> LayoutSize.SMALL
         }
     }

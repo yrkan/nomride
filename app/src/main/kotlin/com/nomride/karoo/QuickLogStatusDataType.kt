@@ -52,6 +52,7 @@ class QuickLogStatusDataType(
                         lastIntakeName = "Energy Gel",
                         lastIntakeTimestampMs = System.currentTimeMillis() - 8 * 60_000,
                         balance = -47.0,
+                        burnRateGph = 45.0,
                         viewConfig = config,
                     )
                 }
@@ -63,6 +64,7 @@ class QuickLogStatusDataType(
                             lastIntakeName = state.lastIntakeName,
                             lastIntakeTimestampMs = state.lastIntakeTimestampMs,
                             balance = state.balance,
+                            burnRateGph = state.burnRateGph,
                             viewConfig = config,
                         )
                     }

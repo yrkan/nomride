@@ -6,6 +6,8 @@ import androidx.glance.appwidget.ExperimentalGlanceRemoteViewsApi
 import androidx.glance.appwidget.GlanceRemoteViews
 import com.nomride.engine.CarbBalanceTracker
 import com.nomride.glance.HydrationView
+import com.nomride.model.IntakeEntry
+import com.nomride.model.RideNutritionState
 import io.hammerhead.karooext.extension.DataTypeImpl
 import io.hammerhead.karooext.internal.Emitter
 import io.hammerhead.karooext.internal.ViewEmitter
@@ -41,6 +43,20 @@ class HydrationDataType(
         emitter.setCancellable { job.cancel() }
     }
 
+    private fun computeMlPerHour(state: RideNutritionState): Double {
+        val waterEntries = state.intakeLog.filter { it.type == IntakeEntry.IntakeType.WATER }
+        if (waterEntries.isEmpty() || state.totalWaterMl <= 0) return 0.0
+        val firstTimestamp = waterEntries.minOf { it.timestampMs }
+        val elapsedMs = System.currentTimeMillis() - firstTimestamp
+        if (elapsedMs < 60_000) return 0.0
+        val hours = elapsedMs / 3_600_000.0
+        return state.totalWaterMl / hours
+    }
+
+    private fun computeSipCount(state: RideNutritionState): Int {
+        return state.intakeLog.count { it.type == IntakeEntry.IntakeType.WATER }
+    }
+
     override fun startView(context: Context, config: ViewConfig, emitter: ViewEmitter) {
         val configJob = CoroutineScope(Dispatchers.IO).launch {
             emitter.onNext(UpdateGraphicConfig(showHeader = false))
@@ -50,6 +66,8 @@ class HydrationDataType(
                 val result = glance.compose(context, DpSize.Unspecified) {
                     HydrationView(
                         totalWaterMl = 750.0,
+                        mlPerHour = 500.0,
+                        sipCount = 3,
                         viewConfig = config,
                     )
                 }
@@ -59,6 +77,8 @@ class HydrationDataType(
                     val result = glance.compose(context, DpSize.Unspecified) {
                         HydrationView(
                             totalWaterMl = state.totalWaterMl,
+                            mlPerHour = computeMlPerHour(state),
+                            sipCount = computeSipCount(state),
                             viewConfig = config,
                         )
                     }

@@ -16,65 +16,95 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 // =============================================================================
-// COLOR SYSTEM - Garmin Edge style, optimized for Karoo outdoor visibility
+// COLOR SYSTEM — Vibrant Orange accent, optimized for Karoo outdoor visibility
 // =============================================================================
 
 data class NomRideColors(
-    val primary: Color,
-    val primaryDark: Color,
-    val onPrimary: Color,
-    val secondary: Color,
+    // Primary accent — Vibrant Orange
     val accent: Color,
+    val accentLight: Color,
+    val onAccent: Color,
+
+    // Surfaces
     val background: Color,
     val surface: Color,
     val surfaceVariant: Color,
     val surfaceElevated: Color,
+
+    // Text
     val onBackground: Color,
     val onSurface: Color,
     val onSurfaceVariant: Color,
-    val success: Color,
+
+    // Semantic — Food/Carbs (green)
+    val food: Color,
+    val foodDark: Color,
+
+    // Semantic — Hydration (blue)
+    val water: Color,
+    val waterDark: Color,
+
+    // Semantic — Warning/Alert
     val warning: Color,
+
+    // Semantic — Error/Danger
     val error: Color,
-    val balanceGreen: Color,
-    val balanceYellowGreen: Color,
-    val balanceYellow: Color,
-    val balanceOrange: Color,
-    val balanceRed: Color,
-    val hydrationBlue: Color,
+    val errorLight: Color,
+
+    // Balance thresholds — 5-level gradient
+    val balancePositive: Color,
+    val balanceMild: Color,
+    val balanceModerate: Color,
+    val balanceSevere: Color,
+    val balanceCritical: Color,
 )
 
 val NomRideDefaultColors = NomRideColors(
-    primary = Color(0xFF4CAF50),
-    primaryDark = Color(0xFF388E3C),
-    onPrimary = Color(0xFF000000),
-    secondary = Color(0xFFFF9800),
-    accent = Color(0xFF2196F3),
-    background = Color(0xFF000000),       // Pure black
+    // Vibrant Orange accent
+    accent = Color(0xFFEA580C),
+    accentLight = Color(0xFFF97316),
+    onAccent = Color(0xFFFFFFFF),
+
+    // Pure black surfaces for OLED + outdoor readability
+    background = Color(0xFF000000),
     surface = Color(0xFF111111),
-    surfaceVariant = Color(0xFF1A1A1A),
-    surfaceElevated = Color(0xFF222222),
-    onBackground = Color(0xFFFFFFFF),
-    onSurface = Color(0xFFFFFFFF),
-    onSurfaceVariant = Color(0xFFAAAAAA),
-    success = Color(0xFF4CAF50),
-    warning = Color(0xFFFF9800),
-    error = Color(0xFFF44336),
-    balanceGreen = Color(0xFF4CAF50),
-    balanceYellowGreen = Color(0xFF8BC34A),
-    balanceYellow = Color(0xFFFFEB3B),
-    balanceOrange = Color(0xFFFF9800),
-    balanceRed = Color(0xFFF44336),
-    hydrationBlue = Color(0xFF1565C0),
+    surfaceVariant = Color(0xFF1C1C1E),
+    surfaceElevated = Color(0xFF2C2C2E),
+
+    // Text hierarchy — high contrast for outdoor
+    onBackground = Color(0xFFF4F4F5),
+    onSurface = Color(0xFFF4F4F5),
+    onSurfaceVariant = Color(0xFF71717A),
+
+    // Food/Carbs — rich green
+    food = Color(0xFF22C55E),
+    foodDark = Color(0xFF16A34A),
+
+    // Hydration — deep blue
+    water = Color(0xFF3B82F6),
+    waterDark = Color(0xFF2563EB),
+
+    // Warning — amber gold
+    warning = Color(0xFFD97706),
+
+    // Error — true red
+    error = Color(0xFFEF4444),
+    errorLight = Color(0xFFF87171),
+
+    // Balance thresholds — green→yellow→orange→red
+    balancePositive = Color(0xFF22C55E),
+    balanceMild = Color(0xFF16A34A),
+    balanceModerate = Color(0xFFEAB308),
+    balanceSevere = Color(0xFFF97316),
+    balanceCritical = Color(0xFFEF4444),
 )
 
 val LocalNomRideColors = staticCompositionLocalOf { NomRideDefaultColors }
 
 // Composable color accessors
-val Primary: Color @Composable get() = LocalNomRideColors.current.primary
-val PrimaryDark: Color @Composable get() = LocalNomRideColors.current.primaryDark
-val OnPrimary: Color @Composable get() = LocalNomRideColors.current.onPrimary
-val Secondary: Color @Composable get() = LocalNomRideColors.current.secondary
 val Accent: Color @Composable get() = LocalNomRideColors.current.accent
+val AccentLight: Color @Composable get() = LocalNomRideColors.current.accentLight
+val OnAccent: Color @Composable get() = LocalNomRideColors.current.onAccent
 val Background: Color @Composable get() = LocalNomRideColors.current.background
 val Surface: Color @Composable get() = LocalNomRideColors.current.surface
 val SurfaceVariant: Color @Composable get() = LocalNomRideColors.current.surfaceVariant
@@ -82,10 +112,12 @@ val SurfaceElevated: Color @Composable get() = LocalNomRideColors.current.surfac
 val OnBackground: Color @Composable get() = LocalNomRideColors.current.onBackground
 val OnSurface: Color @Composable get() = LocalNomRideColors.current.onSurface
 val OnSurfaceVariant: Color @Composable get() = LocalNomRideColors.current.onSurfaceVariant
-val Success: Color @Composable get() = LocalNomRideColors.current.success
+val Food: Color @Composable get() = LocalNomRideColors.current.food
+val FoodDark: Color @Composable get() = LocalNomRideColors.current.foodDark
+val Water: Color @Composable get() = LocalNomRideColors.current.water
+val WaterDark: Color @Composable get() = LocalNomRideColors.current.waterDark
 val Warning: Color @Composable get() = LocalNomRideColors.current.warning
 val Error: Color @Composable get() = LocalNomRideColors.current.error
-val HydrationBlue: Color @Composable get() = LocalNomRideColors.current.hydrationBlue
 
 // =============================================================================
 // TYPOGRAPHY
@@ -175,12 +207,12 @@ fun NomRideTheme(content: @Composable () -> Unit) {
     val colors = NomRideDefaultColors
 
     val colorScheme = darkColorScheme(
-        primary = colors.primary,
-        onPrimary = colors.onPrimary,
-        primaryContainer = colors.primaryDark,
-        secondary = colors.secondary,
-        onSecondary = colors.onPrimary,
-        tertiary = colors.accent,
+        primary = colors.accent,
+        onPrimary = colors.onAccent,
+        primaryContainer = colors.accentLight,
+        secondary = colors.food,
+        onSecondary = Color.Black,
+        tertiary = colors.water,
         background = colors.background,
         onBackground = colors.onBackground,
         surface = colors.surface,

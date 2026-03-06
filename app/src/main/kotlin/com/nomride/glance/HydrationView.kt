@@ -1,73 +1,110 @@
 package com.nomride.glance
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
-import androidx.glance.background
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
-import androidx.glance.layout.padding
-import androidx.glance.text.FontWeight
-import androidx.glance.text.Text
-import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
 import com.nomride.karoo.LayoutSize
-import com.nomride.karoo.TextSizeHelper
 import com.nomride.karoo.getLayoutSize
 import io.hammerhead.karooext.models.ViewConfig
 
 @Composable
 fun HydrationView(
     totalWaterMl: Double,
+    mlPerHour: Double,
+    sipCount: Int,
     viewConfig: ViewConfig,
 ) {
     val layoutSize = getLayoutSize(viewConfig)
-    val primarySp = TextSizeHelper.calculateSp(viewConfig, TextSizeHelper.Role.PRIMARY)
-    val labelSp = TextSizeHelper.calculateSp(viewConfig, TextSizeHelper.Role.LABEL)
-    val padDp = TextSizeHelper.paddingDp(viewConfig.viewSize.second)
+    val waterInt = totalWaterMl.toInt()
 
-    Box(
-        modifier = GlanceModifier.fillMaxSize().background(Color(0xFF1565C0)).padding(padDp.dp),
-        contentAlignment = Alignment.Center,
-    ) {
+    DataFieldContainer {
         when (layoutSize) {
-            LayoutSize.SMALL, LayoutSize.SMALL_WIDE -> {
-                // Minimal: just the value with "ml" suffix
-                Text(
-                    text = "${totalWaterMl.toInt()}ml",
-                    style = TextStyle(
-                        color = ColorProvider(Color.White),
-                        fontSize = primarySp.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                )
+            LayoutSize.SMALL -> {
+                ValueText(text = "$waterInt", color = GlanceColors.Water, fontSize = 24.sp)
             }
 
-            LayoutSize.MEDIUM, LayoutSize.LARGE -> {
-                // Value + separate "ml" label
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = "${totalWaterMl.toInt()}",
-                        style = TextStyle(
-                            color = ColorProvider(Color.White),
-                            fontSize = primarySp.sp,
-                            fontWeight = FontWeight.Bold,
-                        ),
+            LayoutSize.SMALL_WIDE -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "HYDRATION", fontSize = 10.sp)
+                    ValueText(text = "${waterInt}ml", color = GlanceColors.Water, fontSize = 24.sp)
+                }
+            }
+
+            LayoutSize.MEDIUM_WIDE -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "HYDRATION", fontSize = 10.sp)
+                    Spacer(modifier = GlanceModifier.height(2.dp))
+                    DualMetric(
+                        label1 = "TOTAL",
+                        value1 = "${waterInt}ml",
+                        value1Color = GlanceColors.Water,
+                        label2 = "RATE",
+                        value2 = "${mlPerHour.toInt()}ml/h",
+                        value2Color = GlanceColors.Water,
+                        labelFontSize = 9.sp,
+                        valueFontSize = 18.sp,
+                    )
+                }
+            }
+
+            LayoutSize.MEDIUM -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "HYDRATION", fontSize = 11.sp)
+                    ValueText(text = "$waterInt", color = GlanceColors.Water, fontSize = 24.sp)
+                    LabelText(text = "ml", fontSize = 12.sp, color = GlanceColors.WaterLight)
+                }
+            }
+
+            LayoutSize.LARGE -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "HYDRATION", fontSize = 11.sp)
+                    ValueText(text = "${waterInt}ml", color = GlanceColors.Water, fontSize = 36.sp)
+                    Spacer(modifier = GlanceModifier.height(4.dp))
+                    GlanceDivider()
+                    Spacer(modifier = GlanceModifier.height(4.dp))
+                    MetricValueRow(
+                        label = "RATE",
+                        value = "${mlPerHour.toInt()}ml/h",
+                        valueColor = GlanceColors.Water,
+                        fontSize = 16.sp,
                     )
                     Spacer(modifier = GlanceModifier.height(2.dp))
-                    Text(
-                        text = "ml",
-                        style = TextStyle(
-                            color = ColorProvider(Color(0xFFBBDEFB)),
-                            fontSize = labelSp.sp,
-                        ),
+                    MetricValueRow(
+                        label = "SIPS",
+                        value = "$sipCount",
+                        valueColor = GlanceColors.Water,
+                        fontSize = 16.sp,
                     )
+                }
+            }
+
+            LayoutSize.NARROW -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "HYDRATION", fontSize = 11.sp)
+                    ValueText(text = "${waterInt}ml", color = GlanceColors.Water, fontSize = 24.sp)
+                    Spacer(modifier = GlanceModifier.height(2.dp))
+                    LabelText(text = "${mlPerHour.toInt()}ml/h", fontSize = 13.sp, color = GlanceColors.Water)
                 }
             }
         }

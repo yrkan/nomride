@@ -1,26 +1,16 @@
 package com.nomride.glance
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceModifier
-import androidx.glance.background
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
-import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
-import androidx.glance.layout.padding
-import androidx.glance.text.FontWeight
-import androidx.glance.text.Text
-import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
 import com.nomride.karoo.LayoutSize
-import com.nomride.karoo.TextSizeHelper
 import com.nomride.karoo.getLayoutSize
 import io.hammerhead.karooext.models.ViewConfig
 
@@ -29,119 +19,147 @@ fun CarbBalanceView(
     balance: Double,
     burned: Double,
     eaten: Double,
+    burnRateGph: Double,
     lastIntakeTimestampMs: Long,
     viewConfig: ViewConfig,
 ) {
     val layoutSize = getLayoutSize(viewConfig)
-    val primarySp = TextSizeHelper.calculateSp(viewConfig, TextSizeHelper.Role.PRIMARY)
-    val secondarySp = TextSizeHelper.calculateSp(viewConfig, TextSizeHelper.Role.SECONDARY)
-    val tertiarySp = TextSizeHelper.calculateSp(viewConfig, TextSizeHelper.Role.TERTIARY)
-    val labelSp = TextSizeHelper.calculateSp(viewConfig, TextSizeHelper.Role.LABEL)
-    val padDp = TextSizeHelper.paddingDp(viewConfig.viewSize.second)
+    val bgColor = GlanceColors.balanceBgColor(balance)
+    val textColor = GlanceColors.balanceTextColor(balance)
+    val dimColor = GlanceColors.balanceDimColor(balance)
+    val balanceText = "${balance.toInt()}g"
 
-    val bgColor = when {
-        balance > 0 -> Color(0xFF4CAF50)
-        balance > -50 -> Color(0xFF8BC34A)
-        balance > -100 -> Color(0xFFFFEB3B)
-        balance > -150 -> Color(0xFFFF9800)
-        else -> Color(0xFFF44336)
-    }
-    val textColor = if (balance > -100) Color.Black else Color.White
-
-    Box(
-        modifier = GlanceModifier.fillMaxSize().background(bgColor).padding(padDp.dp),
-        contentAlignment = Alignment.Center,
-    ) {
+    ColoredFieldContainer(bgColor = bgColor) {
         when (layoutSize) {
-            LayoutSize.SMALL, LayoutSize.SMALL_WIDE -> {
-                // Minimal: just the balance value
-                Text(
-                    text = "${balance.toInt()}g",
-                    style = TextStyle(
-                        color = ColorProvider(textColor),
-                        fontSize = primarySp.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                )
+            LayoutSize.SMALL -> {
+                ValueText(text = balanceText, color = textColor, fontSize = 24.sp)
             }
 
-            LayoutSize.MEDIUM -> {
-                // Balance + burned/eaten summary row
+            LayoutSize.SMALL_WIDE -> {
                 Column(
                     modifier = GlanceModifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(
-                        text = "${balance.toInt()}g",
-                        style = TextStyle(
-                            color = ColorProvider(textColor),
-                            fontSize = primarySp.sp,
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
+                    LabelText(text = "BALANCE", fontSize = 10.sp, color = dimColor)
+                    ValueText(text = balanceText, color = textColor, fontSize = 26.sp)
+                }
+            }
+
+            LayoutSize.MEDIUM_WIDE -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "CARB BALANCE", fontSize = 10.sp, color = dimColor)
+                    ValueText(text = balanceText, color = textColor, fontSize = 28.sp)
                     Spacer(modifier = GlanceModifier.height(2.dp))
                     Row(modifier = GlanceModifier.fillMaxWidth()) {
-                        Text(
-                            text = "B:${burned.toInt()}g",
-                            style = TextStyle(
-                                color = ColorProvider(textColor),
-                                fontSize = secondarySp.sp,
-                            ),
-                        )
-                        Spacer(modifier = GlanceModifier.defaultWeight())
-                        Text(
-                            text = "E:${eaten.toInt()}g",
-                            style = TextStyle(
-                                color = ColorProvider(textColor),
-                                fontSize = secondarySp.sp,
-                            ),
+                        Column(
+                            modifier = GlanceModifier.defaultWeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            LabelText(text = "BURNED", fontSize = 9.sp, color = dimColor)
+                            ValueText(text = "${burned.toInt()}g", color = textColor, fontSize = 14.sp)
+                        }
+                        Column(
+                            modifier = GlanceModifier.defaultWeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            LabelText(text = "EATEN", fontSize = 9.sp, color = dimColor)
+                            ValueText(text = "${eaten.toInt()}g", color = textColor, fontSize = 14.sp)
+                        }
+                        Column(
+                            modifier = GlanceModifier.defaultWeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            LabelText(text = "RATE", fontSize = 9.sp, color = dimColor)
+                            ValueText(text = "${burnRateGph.toInt()}g/h", color = textColor, fontSize = 14.sp)
+                        }
+                    }
+                }
+            }
+
+            LayoutSize.MEDIUM -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "BALANCE", fontSize = 11.sp, color = dimColor)
+                    ValueText(text = balanceText, color = textColor, fontSize = 24.sp)
+                    Spacer(modifier = GlanceModifier.height(2.dp))
+                    LabelText(
+                        text = "B:${burned.toInt()}g  E:${eaten.toInt()}g",
+                        fontSize = 12.sp,
+                        color = dimColor,
+                    )
+                }
+            }
+
+            LayoutSize.LARGE -> {
+                Column(
+                    modifier = GlanceModifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    LabelText(text = "CARB BALANCE", fontSize = 11.sp, color = dimColor)
+                    ValueText(text = balanceText, color = textColor, fontSize = 36.sp)
+                    Spacer(modifier = GlanceModifier.height(4.dp))
+                    GlanceDivider(color = dimColor)
+                    Spacer(modifier = GlanceModifier.height(4.dp))
+                    MetricValueRow(
+                        label = "BURNED",
+                        value = "${burned.toInt()}g",
+                        valueColor = textColor,
+                        fontSize = 16.sp,
+                        labelColor = dimColor,
+                    )
+                    Spacer(modifier = GlanceModifier.height(2.dp))
+                    MetricValueRow(
+                        label = "EATEN",
+                        value = "${eaten.toInt()}g",
+                        valueColor = textColor,
+                        fontSize = 16.sp,
+                        labelColor = dimColor,
+                    )
+                    Spacer(modifier = GlanceModifier.height(2.dp))
+                    MetricValueRow(
+                        label = "BURN RATE",
+                        value = "${burnRateGph.toInt()}g/h",
+                        valueColor = textColor,
+                        fontSize = 16.sp,
+                        labelColor = dimColor,
+                    )
+                    if (lastIntakeTimestampMs > 0) {
+                        Spacer(modifier = GlanceModifier.height(2.dp))
+                        MetricValueRow(
+                            label = "LAST EAT",
+                            value = formatMinutesAgo(lastIntakeTimestampMs),
+                            valueColor = textColor,
+                            fontSize = 16.sp,
+                            labelColor = dimColor,
                         )
                     }
                 }
             }
 
-            LayoutSize.LARGE -> {
-                // Full detail: balance + burned + eaten + last eat time
+            LayoutSize.NARROW -> {
                 Column(
                     modifier = GlanceModifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(
-                        text = "${balance.toInt()}g",
-                        style = TextStyle(
-                            color = ColorProvider(textColor),
-                            fontSize = primarySp.sp,
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
+                    LabelText(text = "BALANCE", fontSize = 11.sp, color = dimColor)
+                    ValueText(text = balanceText, color = textColor, fontSize = 28.sp)
                     Spacer(modifier = GlanceModifier.height(4.dp))
-                    Text(
-                        text = "Burned: ${burned.toInt()}g",
-                        style = TextStyle(
-                            color = ColorProvider(textColor),
-                            fontSize = tertiarySp.sp,
-                        ),
+                    LabelText(
+                        text = "E: ${eaten.toInt()}g",
+                        fontSize = 13.sp,
+                        color = dimColor,
                     )
                     Spacer(modifier = GlanceModifier.height(2.dp))
-                    Text(
-                        text = "Eaten: ${eaten.toInt()}g",
-                        style = TextStyle(
-                            color = ColorProvider(textColor),
-                            fontSize = tertiarySp.sp,
-                        ),
+                    LabelText(
+                        text = "B: ${burned.toInt()}g",
+                        fontSize = 13.sp,
+                        color = dimColor,
                     )
-                    if (lastIntakeTimestampMs > 0) {
-                        val minutesAgo =
-                            ((System.currentTimeMillis() - lastIntakeTimestampMs) / 60_000).toInt()
-                        Spacer(modifier = GlanceModifier.height(2.dp))
-                        Text(
-                            text = "Last eat: ${minutesAgo}min ago",
-                            style = TextStyle(
-                                color = ColorProvider(textColor.copy(alpha = 0.8f)),
-                                fontSize = labelSp.sp,
-                            ),
-                        )
-                    }
                 }
             }
         }

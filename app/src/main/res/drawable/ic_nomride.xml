@@ -7,7 +7,7 @@
 
     <!-- Green rounded square background -->
     <path
-        android:fillColor="#2E7D32"
+        android:fillColor="#EA580C"
         android:pathData="M2,0
                           H22
                           A2,2 0 0 1 24,2

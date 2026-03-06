@@ -41,7 +41,7 @@ class Preferences(context: Context) {
 
     // FIT export enabled
     var fitExportEnabled: Boolean
-        get() = prefs.getBoolean(KEY_FIT_EXPORT, true)
+        get() = prefs.getBoolean(KEY_FIT_EXPORT, false)
         set(value) = prefs.edit().putBoolean(KEY_FIT_EXPORT, value).apply()
 
     // Start reminders after N minutes

@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#FF4CAF50</color>
-    <color name="primary_dark">#FF388E3C</color>
-    <color name="accent">#FFFF9800</color>
+    <color name="primary">#FFEA580C</color>
+    <color name="primary_dark">#FFC2410C</color>
+    <color name="accent">#FFF97316</color>
 
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
-    <color name="dark_bg">#FF1A1A1A</color>
+    <color name="dark_bg">#FF1C1C1E</color>
 
     <!-- Data field colors -->
     <color name="datafield_bg">#FF000000</color>
     <color name="datafield_text">#FFFFFFFF</color>
-    <color name="text_dim">#FF888888</color>
+    <color name="text_dim">#FF71717A</color>
 
     <!-- Balance thresholds -->
-    <color name="balance_green">#FF4CAF50</color>
-    <color name="balance_yellow_green">#FF8BC34A</color>
-    <color name="balance_yellow">#FFFFEB3B</color>
-    <color name="balance_orange">#FFFF9800</color>
-    <color name="balance_red">#FFF44336</color>
+    <color name="balance_green">#FF22C55E</color>
+    <color name="balance_yellow_green">#FF16A34A</color>
+    <color name="balance_yellow">#FFEAB308</color>
+    <color name="balance_orange">#FFF97316</color>
+    <color name="balance_red">#FFEF4444</color>
+
+    <!-- Semantic -->
+    <color name="food_green">#FF22C55E</color>
+    <color name="water_blue">#FF3B82F6</color>
 
     <!-- Alert colors -->
-    <color name="alert_eat">#FFFF9800</color>
-    <color name="alert_drink">#FF2196F3</color>
+    <color name="alert_eat">#FFD97706</color>
+    <color name="alert_drink">#FF2563EB</color>
 </resources>

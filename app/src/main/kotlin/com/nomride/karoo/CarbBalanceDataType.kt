@@ -52,6 +52,7 @@ class CarbBalanceDataType(
                         balance = -47.0,
                         burned = 82.0,
                         eaten = 35.0,
+                        burnRateGph = 45.0,
                         lastIntakeTimestampMs = System.currentTimeMillis() - 12 * 60_000,
                         viewConfig = config,
                     )
@@ -64,6 +65,7 @@ class CarbBalanceDataType(
                             balance = state.balance,
                             burned = state.totalBurned,
                             eaten = state.totalEaten,
+                            burnRateGph = state.burnRateGph,
                             lastIntakeTimestampMs = state.lastIntakeTimestampMs,
                             viewConfig = config,
                         )

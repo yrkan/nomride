@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
@@ -43,14 +44,17 @@ import androidx.compose.ui.unit.sp
 import com.nomride.engine.CarbBalanceTracker
 import com.nomride.model.FoodTemplate
 import com.nomride.model.IntakeEntry
+import com.nomride.ui.theme.Accent
 import com.nomride.ui.theme.Background
+import com.nomride.ui.theme.Food
 import com.nomride.ui.theme.NomRideTheme
+import com.nomride.ui.theme.OnAccent
 import com.nomride.ui.theme.OnSurface
 import com.nomride.ui.theme.OnSurfaceVariant
-import com.nomride.ui.theme.Primary
+import com.nomride.ui.theme.Surface
 import com.nomride.ui.theme.SurfaceVariant
-import com.nomride.ui.theme.Accent
-import com.nomride.ui.theme.garminBorder
+import com.nomride.ui.theme.Water
+import com.nomride.ui.theme.WaterDark
 import com.nomride.util.Preferences
 
 class QuickLogActivity : ComponentActivity() {
@@ -95,6 +99,7 @@ class QuickLogActivity : ComponentActivity() {
             templateName = template.name,
         )
         tracker.logIntake(entry)
+        Toast.makeText(this, "Logged ${template.name} (${template.carbsGrams}g)", Toast.LENGTH_SHORT).show()
         finish()
     }
 
@@ -112,6 +117,7 @@ class QuickLogActivity : ComponentActivity() {
             templateName = "Custom ${grams}g",
         )
         tracker.logIntake(entry)
+        Toast.makeText(this, "Logged ${grams}g carbs", Toast.LENGTH_SHORT).show()
         finish()
     }
 
@@ -123,6 +129,7 @@ class QuickLogActivity : ComponentActivity() {
             return
         }
         tracker.logWater(ml.toDouble())
+        Toast.makeText(this, "Logged ${ml}ml water", Toast.LENGTH_SHORT).show()
         finish()
     }
 }
@@ -141,8 +148,6 @@ fun FoodLogScreen(
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val isCompact = screenHeight < 420.dp
-    val buttonHeight = if (isCompact) 64.dp else 80.dp
-    val borderColor = SurfaceVariant.copy(alpha = 0.5f)
 
     var showCustom by remember { mutableStateOf(false) }
     var customGrams by remember { mutableIntStateOf(25) }
@@ -152,16 +157,16 @@ fun FoodLogScreen(
             .fillMaxSize()
             .background(Background),
     ) {
-        // Header
+        // Header — Green for food
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Primary)
-                .padding(horizontal = 4.dp, vertical = if (isCompact) 2.dp else 4.dp),
+                .background(Food)
+                .padding(horizontal = 4.dp, vertical = if (isCompact) 4.dp else 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
-                onClick = onCancel,
+                onClick = if (showCustom) ({ showCustom = false }) else onCancel,
                 modifier = Modifier.size(32.dp),
             ) {
                 Icon(
@@ -181,32 +186,34 @@ fun FoodLogScreen(
         }
 
         if (showCustom) {
-            // Custom gram input with +/- buttons
+            // Custom gram input
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp, vertical = if (isCompact) 8.dp else 16.dp),
+                    .padding(horizontal = 12.dp, vertical = if (isCompact) 12.dp else 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Carbs",
-                    fontSize = if (isCompact) 11.sp else 12.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "CARBS",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
                     color = OnSurfaceVariant,
+                    letterSpacing = 1.sp,
                 )
 
-                Spacer(modifier = Modifier.height(if (isCompact) 8.dp else 16.dp))
+                Spacer(modifier = Modifier.height(if (isCompact) 12.dp else 20.dp))
 
+                // +/- row
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    // Decrease -5
                     Box(
                         modifier = Modifier
-                            .size(if (isCompact) 48.dp else 56.dp)
-                            .background(SurfaceVariant)
+                            .size(if (isCompact) 52.dp else 60.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Surface)
                             .clickable { customGrams = (customGrams - 5).coerceAtLeast(5) },
                         contentAlignment = Alignment.Center,
                     ) {
@@ -218,31 +225,30 @@ fun FoodLogScreen(
                         )
                     }
 
-                    // Value display
                     Column(
                         modifier = Modifier.width(if (isCompact) 100.dp else 120.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
                             text = "$customGrams",
-                            fontSize = if (isCompact) 36.sp else 48.sp,
+                            fontSize = if (isCompact) 42.sp else 56.sp,
                             fontWeight = FontWeight.Black,
-                            color = Primary,
+                            color = Food,
                             textAlign = TextAlign.Center,
                         )
                         Text(
-                            text = "g",
-                            fontSize = if (isCompact) 14.sp else 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Primary.copy(alpha = 0.7f),
+                            text = "grams",
+                            fontSize = if (isCompact) 12.sp else 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Food.copy(alpha = 0.6f),
                         )
                     }
 
-                    // Increase +5
                     Box(
                         modifier = Modifier
-                            .size(if (isCompact) 48.dp else 56.dp)
-                            .background(SurfaceVariant)
+                            .size(if (isCompact) 52.dp else 60.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Surface)
                             .clickable { customGrams = (customGrams + 5).coerceAtMost(200) },
                         contentAlignment = Alignment.Center,
                     ) {
@@ -255,24 +261,25 @@ fun FoodLogScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(if (isCompact) 16.dp else 24.dp))
+                Spacer(modifier = Modifier.height(if (isCompact) 20.dp else 32.dp))
 
                 // Action buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(if (isCompact) 44.dp else 52.dp)
-                            .background(SurfaceVariant)
+                            .height(if (isCompact) 48.dp else 56.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Surface)
                             .clickable { showCustom = false },
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "BACK",
-                            fontSize = if (isCompact) 12.sp else 14.sp,
+                            fontSize = if (isCompact) 13.sp else 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = OnSurfaceVariant,
                         )
@@ -280,14 +287,15 @@ fun FoodLogScreen(
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .height(if (isCompact) 44.dp else 52.dp)
-                            .background(Primary)
+                            .height(if (isCompact) 48.dp else 56.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Food)
                             .clickable { onLogCustom(customGrams) },
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "LOG ${customGrams}g",
-                            fontSize = if (isCompact) 12.sp else 14.sp,
+                            fontSize = if (isCompact) 13.sp else 14.sp,
                             fontWeight = FontWeight.Black,
                             color = Color.Black,
                         )
@@ -295,50 +303,44 @@ fun FoodLogScreen(
                 }
             }
         } else {
-            // Template buttons list
+            // Template list
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 12.dp, vertical = if (isCompact) 8.dp else 12.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 templates.forEach { template ->
-                    Box(
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .garminBorder(borderColor)
-                            .background(Background)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Surface)
                             .clickable { onLog(template) }
-                            .height(buttonHeight),
+                            .padding(horizontal = 16.dp, vertical = if (isCompact) 14.dp else 18.dp),
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .width(3.dp)
-                                    .fillMaxHeight()
-                                    .background(Primary),
-                            )
+                        Text(
+                            text = template.name,
+                            fontSize = if (isCompact) 14.sp else 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = OnSurface,
+                            modifier = Modifier.weight(1f),
+                        )
 
-                            Text(
-                                text = template.name,
-                                fontSize = if (isCompact) 14.sp else 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = OnSurface,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 8.dp),
-                            )
-
-                            Text(
-                                text = "${template.carbsGrams}g",
-                                fontSize = if (isCompact) 20.sp else 24.sp,
-                                fontWeight = FontWeight.Black,
-                                color = Primary,
-                                modifier = Modifier.padding(end = 8.dp),
-                            )
-                        }
+                        Text(
+                            text = "${template.carbsGrams}",
+                            fontSize = if (isCompact) 22.sp else 26.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Food,
+                        )
+                        Text(
+                            text = "g",
+                            fontSize = if (isCompact) 14.sp else 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Food.copy(alpha = 0.6f),
+                        )
                     }
                 }
             }
@@ -347,35 +349,37 @@ fun FoodLogScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(if (isCompact) 44.dp else 52.dp)
+                        .height(if (isCompact) 48.dp else 56.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .background(Accent)
                         .clickable { showCustom = true },
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "CUSTOM",
-                        fontSize = if (isCompact) 12.sp else 14.sp,
+                        fontSize = if (isCompact) 13.sp else 14.sp,
                         fontWeight = FontWeight.Black,
-                        color = Color.White,
+                        color = OnAccent,
                     )
                 }
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(if (isCompact) 44.dp else 52.dp)
-                        .background(SurfaceVariant)
+                        .height(if (isCompact) 48.dp else 56.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Surface)
                         .clickable(onClick = onCancel),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = "CANCEL",
-                        fontSize = if (isCompact) 12.sp else 14.sp,
+                        fontSize = if (isCompact) 13.sp else 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = OnSurfaceVariant,
                     )
@@ -393,20 +397,18 @@ fun WaterLogScreen(
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val isCompact = screenHeight < 420.dp
     val waterOptions = listOf(150, 200, 250, 500, 750)
-    val borderColor = SurfaceVariant.copy(alpha = 0.5f)
-    val waterBlue = Color(0xFF1565C0)
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Background),
     ) {
-        // Header
+        // Header — Blue for water
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(waterBlue)
-                .padding(horizontal = 4.dp, vertical = if (isCompact) 2.dp else 4.dp),
+                .background(WaterDark)
+                .padding(horizontal = 4.dp, vertical = if (isCompact) 4.dp else 6.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
@@ -433,45 +435,33 @@ fun WaterLogScreen(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp, vertical = if (isCompact) 8.dp else 12.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             waterOptions.forEach { ml ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .garminBorder(borderColor)
-                        .background(Background)
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Surface)
                         .clickable { onLog(ml) }
-                        .height(if (isCompact) 64.dp else 80.dp),
+                        .padding(vertical = if (isCompact) 14.dp else 18.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .width(3.dp)
-                                .fillMaxHeight()
-                                .background(waterBlue),
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "$ml",
                             fontSize = if (isCompact) 28.sp else 36.sp,
                             fontWeight = FontWeight.Black,
-                            color = waterBlue,
+                            color = Water,
                         )
                         Text(
-                            text = "ml",
+                            text = " ml",
                             fontSize = if (isCompact) 14.sp else 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = waterBlue.copy(alpha = 0.7f),
-                            modifier = Modifier.padding(start = 4.dp),
+                            color = Water.copy(alpha = 0.6f),
                         )
-
-                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }
@@ -481,15 +471,16 @@ fun WaterLogScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 4.dp)
-                .height(if (isCompact) 44.dp else 52.dp)
-                .background(SurfaceVariant)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .height(if (isCompact) 48.dp else 56.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Surface)
                 .clickable(onClick = onCancel),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = "CANCEL",
-                fontSize = if (isCompact) 12.sp else 14.sp,
+                fontSize = if (isCompact) 13.sp else 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = OnSurfaceVariant,
             )
